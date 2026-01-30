@@ -1,15 +1,12 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class GestorAlumnos {
     public static void main(String[] args) {
         Map<String, List> alumnos = new HashMap<>();
         String FAlumnos = "Alumnos.txt";
         String Resultados = "Resultados.txt";
+
 
         //leer el archivo
         try (BufferedReader reader = new BufferedReader(new FileReader(FAlumnos));){
@@ -25,9 +22,13 @@ public class GestorAlumnos {
                     alumnos.get(Nombre).add(Nota);
                 }
             }
-        }catch (Exception e){
+        }catch (IOException e){
             System.out.println("error al leer el archivo: " + e.getMessage());
             return;
+        }
+        //mostrar HashMap
+        for(String Nombre : alumnos.keySet()){
+            System.out.println("Alumno: " + Nombre + ": " + alumnos.get(Nombre));
         }
 
         //Nota media
@@ -43,7 +44,13 @@ public class GestorAlumnos {
             medias.put(alumno, media);
         }
 
-        //Alumnos aprovados
+        //mostrar medias
+        System.out.println("--------------------");
+        for(String alumno : alumnos.keySet()){
+            System.out.println("Notas medias: " + alumno + ": " + medias.get(alumno));
+        }
+
+        //Alumnos aprobados
         Map<String, Double> aprobados = new HashMap<>();
 
         for(String alumno : alumnos.keySet()){
@@ -52,5 +59,34 @@ public class GestorAlumnos {
             }
         }
 
+        //mostrar aprobados
+        System.out.println("--------------------");
+        for(String alumno : alumnos.keySet()) {
+            if (aprobados.containsKey(alumno)){System.out.println("Aprobados: " + alumno + ": " + aprobados.get(alumno));
+            }else {
+                System.out.println("Suspenso: " + alumno + ": Suspenso");
+            }
+        }
+
+
+        //ordenar por nota media
+        List<Map.Entry<String, Double>> ordenada = new ArrayList<>(aprobados.entrySet());
+
+        Collections.sort(ordenada, new Comparator<Map.Entry<String, Double>>() {
+            public int compare(Map.Entry<String, Double> a, Map.Entry<String, Double> b) {
+                return Double.compare(b.getValue(), a.getValue());
+            }
+        });
+
+        //alumno con la mejor nota media
+        Map.Entry<String, Double> mejorAlumno = ordenada.get(0);
+
+        for (Map.Entry<String, Double> alumno : aprobados.entrySet()) {
+            if (alumno.getKey().equals(mejorAlumno.getKey())){
+                mejorAlumno = alumno;
+                System.out.println("--------------------");
+                System.out.println("mejor alumno: " + mejorAlumno.getKey() + ": " + mejorAlumno.getValue());
+            }
+        }
     }
 }
