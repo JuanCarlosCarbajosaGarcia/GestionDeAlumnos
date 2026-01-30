@@ -27,6 +27,7 @@ public class GestorAlumnos {
             return;
         }
         //mostrar HashMap
+        System.out.println("--------------------");
         for(String Nombre : alumnos.keySet()){
             System.out.println("Alumno: " + Nombre + ": " + alumnos.get(Nombre));
         }
